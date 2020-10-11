@@ -1,13 +1,9 @@
 //     // a Promise API for Battery status
 // window.navigator.addEventListener('onchargingchange', chargingChanged);
-function chargingChanged(e){
-    console.log(e);
-}
 window.navigator.getBattery()
-    // .then(Battery => Battery.addEventListener('onchargingchange', chargingChanged))
     .then(Battery => startApp(Battery))
-    .catch(err => console.log(err))
-    .finally()
+    .catch(err => console.log(err));
+
     // get the #battery canvas element and make 2d context
 const canvas_battery = document.getElementById('#battery');
 const battery_ctx = canvas_battery.getContext('2d');
@@ -75,6 +71,11 @@ function loadCharging(Battery) {
 function textInfo(Battery){
     let state = Battery.charging ? 'charging' : 'not charging';
 }
+// this is a method for onchargingchange property of battery
+function chargingChanged(e){
+    console.log(e);
+}
+
 function startApp(Battery){
     if(Battery.charging){
         loadCharging(Battery);
