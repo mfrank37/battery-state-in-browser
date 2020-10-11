@@ -1,8 +1,13 @@
-    // a Promise API for Battery status
+//     // a Promise API for Battery status
+// window.navigator.addEventListener('onchargingchange', chargingChanged);
+function chargingChanged(e){
+    console.log(e);
+}
 window.navigator.getBattery()
+    // .then(Battery => Battery.addEventListener('onchargingchange', chargingChanged))
     .then(Battery => startApp(Battery))
-    .catch(err => console.log(err));
-
+    .catch(err => console.log(err))
+    .finally()
     // get the #battery canvas element and make 2d context
 const canvas_battery = document.getElementById('#battery');
 const battery_ctx = canvas_battery.getContext('2d');
@@ -40,37 +45,40 @@ frame();
         //and event to handle change in value
         // onlevelchange
         // onchargingchange
-        let ba = new BatteryManager();
+        
 function drawBattery(Battery) {
-    if( Battery.charging ) {
-        battery_ctx.beginPath();
-        battery_ctx.moveTo(battery_frame.x, battery_frame.y+battery_frame.h/2);
-        battery_ctx.lineTo(battery_frame.x+50, battery_frame.y+battery_frame.h/2);
-        battery_ctx.fillStyle = 'rgb(100, 200, 100)';
-    } else {
-        if( Battery.level > 0.50 ) {
-            battery_ctx.fillStyle = 'rgb(80, 170, 80)';
-        } else if( Battery.level > 0.2 ) {
-            battery_ctx.fillStyle = 'rgb(170, 150, 40)';
+        if( Battery.level > 0.5 ) {
+            battery_ctx.fillStyle = 'rgb(0, 230, 0)'; // healthy green
+        } else if( Battery.level > 0.15 ) {
+            battery_ctx.fillStyle = 'rgb(230, 170, 0)'; // warning yellow-orange
         } else {
-            battery_ctx.fillStyle = 'rgb(120, 40, 40)';
+            battery_ctx.fillStyle = 'rgb(210, 50, 0)'; // danger red
         }
-    }
     battery_progress.w = Battery.level * (battery_frame.w);
     battery_ctx.fillRect(battery_progress.x, battery_progress.y, battery_progress.w, battery_progress.h);
+
+    textInfo(Battery);
 }
 
 // loads from 0% up to x% onload && charging || charging
 function loadCharging(Battery) {
-    drawBattery(Battery);
+    battery_ctx.beginPath();
+    battery_ctx.moveTo(battery_frame.x, battery_frame.y+battery_frame.h/2);
+    battery_ctx.lineTo(battery_frame.x+50, battery_frame.y+battery_frame.h/2);
+    battery_ctx.fillStyle = 'rgb(100, 200, 100)';
     
+    textInfo(Battery);
     // requestAnimationFrame(loadCharging);
 }
 
+// Displays the verbose information of the battery status on the canvas
+function textInfo(Battery){
+    let state = Battery.charging ? 'charging' : 'not charging';
+}
 function startApp(Battery){
     if(Battery.charging){
         loadCharging(Battery);
     } else {
-
+        drawBattery(Battery);       
     }
 }
