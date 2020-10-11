@@ -1,8 +1,10 @@
+// Since onchangelevel property isnot working to me.
+// I will be using setInterval(()=>{}, 5000); so there will be less than 5 seconds latency
 //     // a Promise API for Battery status
 // window.navigator.addEventListener('onchargingchange', chargingChanged);
 window.navigator.getBattery()
     .then(Battery => startApp(Battery))
-    .catch(err => console.log(err));
+    .catch(err => console.log(`${err.message}: ${err.message}`));
 
     // get the #battery canvas element and make 2d context
 const canvas_battery = document.getElementById('#battery');
@@ -69,7 +71,10 @@ function loadCharging(Battery) {
 
 // Displays the verbose information of the battery status on the canvas
 function textInfo(Battery){
-    let state = Battery.charging ? 'charging' : 'not charging';
+    let state = Battery.charging ? 'charging' : 'discharging';
+    battery_ctx.font = '13px Arial';
+    battery_ctx.fillStyle = '#FFF';
+    battery_ctx.fillText(`Battery state: ${state}`, battery_frame.x, 20);
 }
 // this is a method for onchargingchange property of battery
 function chargingChanged(e){
@@ -80,6 +85,6 @@ function startApp(Battery){
     if(Battery.charging){
         loadCharging(Battery);
     } else {
-        drawBattery(Battery);       
+        drawBattery(Battery);
     }
 }
